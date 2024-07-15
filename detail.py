@@ -32,6 +32,19 @@ class Disk():
     def tickness_correction(self, size):
         return size + self.cutter_thickness/2
     
+class Parameters():
+    """Класс для хранения информации о параметрах резки:
+    скорости прямого хода резки,
+     скорость обратного хода резки,
+      скорость заглубления инструмента, 
+       шаг глубины работы инструмента,
+        флаг режима зиг-заг"""
+    def __init__(self, speed_forward, speed_backward, speed_depth, depth_step, zigzag):
+        self.speed_forward = speed_forward
+        self.speed_backward = speed_backward
+        self.speed_depth = speed_depth
+        self.depth_step = depth_step
+        self.zigzag = zigzag
 class Exercise():
     """Класс описывающий задание - объект деталь, объект заготовка, объект диск, количество 
     деталей"""
@@ -40,3 +53,13 @@ class Exercise():
         self.workpiece = workpiece
         self.disk = disk
         self.count = count
+    def __str__(self):
+        return f"Деталь: {self.detail.width}x{self.detail.length}x{self.detail.thickness}\n" \
+               f"Заготовка: {self.workpiece.width}x{self.workpiece.length}x{self.workpiece.thickness}\n" \
+               f"Диск: {self.disk.diameter}x{self.disk.support_thickness}x{self.disk.cutter_thickness}\n" \
+               f"Количество: {self.count}"
+    #Метод, рассчитывающий количество пилов по осям X и Y 
+    def count_cutter(self):
+        X_count = self.workpiece.length // self.detail.length
+        Y_count = self.workpiece.width // self.detail.width
+        return X_count, Y_count
