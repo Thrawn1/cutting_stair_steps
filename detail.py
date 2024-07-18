@@ -136,7 +136,11 @@ class Worker():
         for i in range(X_count):
             if i == 0:
                 X_NOW += self.exercise.offset
-            line = (self.round_coordinates(Y_NOW - self.disk.cutter_extension()), self.round_coordinates(Y_NOW + Y_length + self.disk.cutter_extension()),self.round_coordinates(X_NOW))
+            if (Y_NOW - Y_length - self.disk.cutter_extension()) < -1898:
+                Y = -1898
+            else:
+                Y = Y_NOW - Y_length - self.disk.cutter_extension()
+            line = (self.round_coordinates(Y_NOW + self.disk.cutter_extension()), self.round_coordinates(Y),self.round_coordinates(X_NOW))
             intermediate_result_xy.append(line)
             X_NOW += self.disk.tickness_correction(self.detail.length)
         return intermediate_result_xy
@@ -318,9 +322,9 @@ class Generator_gcode():
 
 
 detali = Detail(length=1100, width=420, thickness=120, angle1=90, angle2=90, material="granite")
-zagotovka = Workpiece(length=3000, width=1500, thickness=20, angle1=90, angle2=90, material="granite", x=500, y=-500)
-disk = Disk(number=20, diameter=510, support_thickness=3, cutter_thickness=3.8, material="granite",name="Granit Marimal D510")
-zadanie = Exercise(detali, zagotovka, disk, 2, offset=10)
-parametry = Parameters(speed_forward=1000, speed_depth=100, depth_step_forward=5, zigzag=True) 
+zagotovka = Workpiece(length=2240, width=880, thickness=120, angle1=90, angle2=90, material="granite", x=813.871, y=-952.299)
+disk = Disk(number=20, diameter=509, support_thickness=3, cutter_thickness=4, material="granite",name="Granit Marimal D510")
+zadanie = Exercise(detali, zagotovka, disk, 4, offset=10)
+parametry = Parameters(speed_forward=2200, speed_depth=110, depth_step_forward=5, zigzag=True) 
 worker = Worker(zadanie, parametry, detali, zagotovka, disk)
 print(worker.calculate_coordinates())
