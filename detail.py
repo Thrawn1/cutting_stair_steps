@@ -1,3 +1,29 @@
+class Mashine_limits():
+    """Класс описывающий ограничения станка"""
+    def __init__(self,x_min,x_max,y_min,y_max,type_mashine):
+        self.x_min = x_min
+        self.x_max = x_max
+        self.y_min = y_min
+        self.y_max = y_max
+        self.type_mashine = type_mashine
+
+    def chek_coordinate(self,axis,value):
+        if axis == 'X':
+            if self.x_min<value<self.x_max:
+                return value
+            else:
+                if value < self.x_min:
+                    return self.x_min
+                else:
+                    return self.x_max
+        elif axis == 'Y':
+            if self.y_min<value<self.y_max:
+                return value
+            else:
+                if value<self.y_min:
+                    return self.y_min
+                else:
+                    return self.y_max
 class Detail():
     """Класс для хранения информации о детали - ее ширине, длине, толщине, углах между сторонами и
      материале"""
@@ -44,7 +70,7 @@ class Parameters:
     шаг глубины работы инструмента по обратному ходу,
     флаг режима зиг-заг"""
     
-    def __init__(self, speed_forward, speed_depth, depth_step_forward, 
+    def __init__(self, speed_forward, speed_depth, depth_step_forward, MAX_Y,MIN_Y,MAX_X,MIN_X,
                  speed_backward=None, depth_step_backward=None, zigzag=True,extra_depth=0):
         self.speed_forward = speed_forward
         self.speed_backward = speed_backward if speed_backward is not None else 0.7 * speed_forward
@@ -53,6 +79,10 @@ class Parameters:
         self.depth_step_backward = depth_step_backward if depth_step_backward is not None else depth_step_forward
         self.zigzag = zigzag
         self.extra_depth = extra_depth
+        self.max_x = MAX_X
+        self.min_x = MIN_X
+        self.min_y = MIN_Y
+        self.max_y = MAX_Y
 
     def __str__(self):
         return f"Скорость прямого хода: {self.speed_forward}\n" \
@@ -130,7 +160,9 @@ class Worker():
         for i in range(Y_count):
             if i == 0:
                 Y_NOW -= self.exercise.offset
-            line = (self.round_coordinates(X_NOW-self.disk.cutter_extension()), self.round_coordinates(X_NOW + X_length + self.disk.cutter_extension()),self.round_coordinates(Y_NOW))
+            line = (self.round_coordinates(X_NOW-self.disk.cutter_extension()), 
+                    self.round_coordinates(X_NOW + X_length + self.disk.cutter_extension()),
+                    self.round_coordinates(Y_NOW))
             intermediate_result_xy.append(line)
             Y_NOW -= self.disk.tickness_correction(self.detail.width)
         for i in range(X_count):
@@ -140,7 +172,8 @@ class Worker():
                 Y = -1898
             else:
                 Y = Y_NOW - Y_length - self.disk.cutter_extension()
-            line = (self.round_coordinates(Y_NOW + self.disk.cutter_extension()), self.round_coordinates(Y),self.round_coordinates(X_NOW))
+            line = (self.round_coordinates(Y_NOW + self.disk.cutter_extension()), 
+                    self.round_coordinates(Y),self.round_coordinates(X_NOW))
             intermediate_result_xy.append(line)
             X_NOW += self.disk.tickness_correction(self.detail.length)
         return intermediate_result_xy
@@ -321,10 +354,11 @@ class Generator_gcode():
         pass
 
 
-detali = Detail(length=1100, width=420, thickness=120, angle1=90, angle2=90, material="granite")
-zagotovka = Workpiece(length=2240, width=880, thickness=120, angle1=90, angle2=90, material="granite", x=813.871, y=-952.299)
+detali = Detail(length=420, width=1190, thickness=120, angle1=90, angle2=90, material="granite")
+zagotovka = Workpiece(length=1540, width=1225, thickness=120, angle1=90, angle2=90, material="granite", x=1022.775, y=-631.581)
 disk = Disk(number=20, diameter=509, support_thickness=3, cutter_thickness=4, material="granite",name="Granit Marimal D510")
 zadanie = Exercise(detali, zagotovka, disk, 4, offset=10)
-parametry = Parameters(speed_forward=2200, speed_depth=110, depth_step_forward=5, zigzag=True) 
+parametry = Parameters(speed_forward=2200, speed_depth=110, depth_step_forward=5, zigzag=True,MAX_X=3500,MIN_X=0,MAX_Y=0,MIN_Y=-1898) 
 worker = Worker(zadanie, parametry, detali, zagotovka, disk)
 print(worker.calculate_coordinates())
+ 
