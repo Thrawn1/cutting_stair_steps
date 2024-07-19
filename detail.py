@@ -1,4 +1,4 @@
-class Mashine_limits():
+class MashineLimits():
     """Класс описывающий ограничения станка"""
     def __init__(self,x_min,x_max,y_min,y_max,type_mashine):
         self.x_min = x_min
@@ -42,6 +42,12 @@ class Workpiece(Detail):
         super().__init__(width, length, thickness, angle1, angle2, material)
         self.x = x
         self.y = y
+    def get_limits_workpiece(self):
+        x_min = self.x
+        y_max = self.y
+        x_max = self.x + self.length
+        y_min = self.y - self.width
+        return x_max,y_max,x_min,y_min
 
 class Disk():
     """Класс для хранения информации о диске - его номере, диаметре, толщине суппорта,
@@ -70,7 +76,7 @@ class Parameters:
     шаг глубины работы инструмента по обратному ходу,
     флаг режима зиг-заг"""
     
-    def __init__(self, speed_forward, speed_depth, depth_step_forward, MAX_Y,MIN_Y,MAX_X,MIN_X,
+    def __init__(self, speed_forward, speed_depth, depth_step_forward,
                  speed_backward=None, depth_step_backward=None, zigzag=True,extra_depth=0):
         self.speed_forward = speed_forward
         self.speed_backward = speed_backward if speed_backward is not None else 0.7 * speed_forward
@@ -79,11 +85,6 @@ class Parameters:
         self.depth_step_backward = depth_step_backward if depth_step_backward is not None else depth_step_forward
         self.zigzag = zigzag
         self.extra_depth = extra_depth
-        self.max_x = MAX_X
-        self.min_x = MIN_X
-        self.min_y = MIN_Y
-        self.max_y = MAX_Y
-
     def __str__(self):
         return f"Скорость прямого хода: {self.speed_forward}\n" \
                f"Скорость обратного хода: {self.speed_backward}\n" \
@@ -126,25 +127,31 @@ class Exercise():
     def count_cutter(self):
         X_count = (self.workpiece.length-self.offset) // self.detail.length
         Y_count = (self.workpiece.width-self.offset) // self.detail.width
+        if self.offset > 0:
+            X_count +=1
+            Y_count +=1
         return X_count, Y_count
 
 class Worker():
     """Класс для рассчета работы станка. Принимает объект задания, заготовки , детали, 
     объект параметров резки"""
     def __init__(self, exercise:Exercise, parameters:Parameters,
-                 detail:Detail,workpiece:Workpiece,disk:Disk,result=None):
+                 detail:Detail,workpiece:Workpiece,disk:Disk,mashine_limits:MashineLimits,result=None):
         self.exercise = exercise
         self.parameters = parameters
         self.detail = detail
         self.workpiece = workpiece
         self.disk = disk
         self.result = result
+        self.mashine_limits = mashine_limits
     def __str__(self):
         return f"Задание: {self.exercise}\n" \
                f"Параметры резки: {self.parameters}\n" \
                f"Результат: {self.result}"
     def round_coordinates(self, value):
         return round(value, 3)
+    def calculation_of_completely_finished_details(self):
+        pass
     def calculate_coordinates_X_Y_cuts(self):
         intermediate_result_xy = []
         X_START = self.workpiece.x
@@ -172,8 +179,8 @@ class Worker():
                 Y = -1898
             else:
                 Y = Y_NOW - Y_length - self.disk.cutter_extension()
-            line = (self.round_coordinates(Y_NOW + self.disk.cutter_extension()), 
-                    self.round_coordinates(Y),self.round_coordinates(X_NOW))
+            line = {'Y1':self.round_coordinates(Y_NOW + self.disk.cutter_extension()),
+                    'Y2':self.round_coordinates(Y),'X':self.round_coordinates(X_NOW)}
             intermediate_result_xy.append(line)
             X_NOW += self.disk.tickness_correction(self.detail.length)
         return intermediate_result_xy
@@ -200,9 +207,9 @@ class Worker():
         intermediate_result_xy = self.calculate_coordinates_X_Y_cuts()
         intermediate_result_z = self.calculate_coordinates_Z_cuts()
         return intermediate_result_xy, intermediate_result_z
-
-
-class Block_4axis_Denver():
+    def Calculation_of_coordinates_of_movement(self):
+        cuts = self.calculate_coordinates_X_Y_cuts()
+class Block4AxisDenver():
     """Класс для генерации блоков кода для станка Denver с 4-мя осями"""
     def __init__(self,name_programm,disk:Disk,worker:Worker,parametrs:Parameters,count_line=1):
         self.count_line = count_line
@@ -328,7 +335,7 @@ class Block_4axis_Denver():
         line = f'N{self.count_line} Z{self.disk.Z_sec}'
         moving_between_work_blok.append(line)
         self.count_line += 1
-        line = f'N{self.count_line} G00 X0 Y0 C0'
+        line = f'N{self.count_line} G00 X0 Y0'
 
 
 
@@ -345,7 +352,7 @@ N19 S1750 M04
 N20 G00 Z5
 """
 
-class Generator_gcode():
+class GeneratorGcode():
     """Класс для генерации g-code"""
     def __init__(self, worker,parameters):
         self.worker = worker
@@ -358,7 +365,14 @@ detali = Detail(length=420, width=1190, thickness=120, angle1=90, angle2=90, mat
 zagotovka = Workpiece(length=1540, width=1225, thickness=120, angle1=90, angle2=90, material="granite", x=1022.775, y=-631.581)
 disk = Disk(number=20, diameter=509, support_thickness=3, cutter_thickness=4, material="granite",name="Granit Marimal D510")
 zadanie = Exercise(detali, zagotovka, disk, 4, offset=10)
-parametry = Parameters(speed_forward=2200, speed_depth=110, depth_step_forward=5, zigzag=True,MAX_X=3500,MIN_X=0,MAX_Y=0,MIN_Y=-1898) 
+parametry = Parameters(speed_forward=2200, speed_depth=110, depth_step_forward=5, zigzag=True) 
 worker = Worker(zadanie, parametry, detali, zagotovka, disk)
 print(worker.calculate_coordinates())
  
+ml = MashineLimits(x_max=3500,x_min=0,y_max=0,y_min=-1898,type_mashine='Denver 4axis')
+print(ml.chek_coordinate('X',3600))
+print(ml.chek_coordinate('X',3220))
+print(ml.chek_coordinate('X',-344))
+print(ml.chek_coordinate('Y',100))
+print(ml.chek_coordinate('Y',-2000))
+print(ml.chek_coordinate('Y',-1200))
