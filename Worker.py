@@ -42,16 +42,7 @@ class Worker():
             print('Задание можно выполнить из заготовки')
 
     
-    def calculate_coordinates(self,count,coordinate_now,axis):
-        for i in range(count):
-            if i ==0:
-                if axis == 'X':
-                    coordinate_now+=self.exercise.offset
-                    main_axis_coordinate = self.workpiece.x
-                elif axis == 'Y':
-                    coordinate_now-=self.exercise.offset
-                    main_axis_coordinate = self.workpiece.y
-  
+
     
     
     
@@ -63,16 +54,18 @@ class Worker():
         for i in range(Y_count):
             if i == 0:
                 Y_NOW -= self.exercise.offset
+            else:
+                Y_NOW -= self.disk.tickness_correction(self.detail.width)
+            
             line = (self.round_coordinates(X_NOW-self.disk.cutter_extension()), 
                     self.round_coordinates(X_NOW + self.workpiece.length + self.disk.cutter_extension()),
                     self.round_coordinates(Y_NOW))
+            
             intermediate_result_xy.append(line)
-            Y_NOW -= self.disk.tickness_correction(self.detail.width)
+            
         for i in range(X_count):
             if i == 0:
                 X_NOW += self.exercise.offset
-            if (Y_NOW - self.workpiece.width - self.disk.cutter_extension()) < -1898:
-                Y = -1898
             else:
                 Y = Y_NOW - self.workpiece.width - self.disk.cutter_extension()
             line = {'Y1':self.round_coordinates(Y_NOW + self.disk.cutter_extension()),
