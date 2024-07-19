@@ -4,7 +4,7 @@ class Worker():
     """Класс для рассчета работы станка. Принимает объект задания, заготовки , детали, 
     объект параметров резки"""
     def __init__(self, exercise:Exercise, parameters:Parameters,
-                 detail:Detail,workpiece:Workpiece,disk:Disk,mashine_limits:MaсhineLimits,
+                 detail:Detail,workpiece:Workpiece,disk:Disk,maсhine_limits:MaсhineLimits,
                  result=None):
         self.exercise = exercise
         self.parameters = parameters
@@ -12,7 +12,7 @@ class Worker():
         self.workpiece = workpiece
         self.disk = disk
         self.result = result
-        self.mashine_limits = mashine_limits
+        self.maсhine_limits = maсhine_limits
     def __str__(self):
         return f"Задание: {self.exercise}\n" \
                f"Параметры резки: {self.parameters}\n" \
