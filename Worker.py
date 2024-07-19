@@ -41,11 +41,24 @@ class Worker():
         else:
             print('Задание можно выполнить из заготовки')
 
+    
+    def calculate_coordinates(self,count,coordinate_now,axis):
+        for i in range(count):
+            if i ==0:
+                if axis == 'X':
+                    coordinate_now+=self.exercise.offset
+                    main_axis_coordinate = self.workpiece.x
+                elif axis == 'Y':
+                    coordinate_now-=self.exercise.offset
+                    main_axis_coordinate = self.workpiece.y
+  
+    
+    
+    
     def calculate_coordinates_X_Y_cuts(self):
         intermediate_result_xy = []
         X_NOW = self.workpiece.x
         Y_NOW = self.workpiece.y
-
         X_count, Y_count = self.exercise.count_cutter()
         for i in range(Y_count):
             if i == 0:
