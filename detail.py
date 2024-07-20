@@ -1,4 +1,4 @@
-class MaсhineLimits():
+class MachineLimits():
     """Класс описывающий ограничения станка"""
     def __init__(self,x_min,x_max,y_min,y_max,type_mashine):
         self.x_min = x_min
@@ -136,7 +136,7 @@ class Worker():
     """Класс для рассчета работы станка. Принимает объект задания, заготовки , детали, 
     объект параметров резки"""
     def __init__(self, exercise:Exercise, parameters:Parameters,
-                 detail:Detail,workpiece:Workpiece,disk:Disk,mashine_limits:MaсhineLimits,result=None):
+                 detail:Detail,workpiece:Workpiece,disk:Disk,mashine_limits:MachineLimits,result=None):
         self.exercise = exercise
         self.parameters = parameters
         self.detail = detail
@@ -369,7 +369,7 @@ parametry = Parameters(speed_forward=2200, speed_depth=110, depth_step_forward=5
 worker = Worker(zadanie, parametry, detali, zagotovka, disk)
 print(worker.calculate_coordinates())
  
-ml = MaсhineLimits(x_max=3500,x_min=0,y_max=0,y_min=-1898,type_mashine='Denver 4axis')
+ml = MachineLimits(x_max=3500,x_min=0,y_max=0,y_min=-1898,type_mashine='Denver 4axis')
 print(ml.chek_coordinate('X',3600))
 print(ml.chek_coordinate('X',3220))
 print(ml.chek_coordinate('X',-344))
