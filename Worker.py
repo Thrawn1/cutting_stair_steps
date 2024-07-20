@@ -1,11 +1,15 @@
-from detail import Exercise, Parameters, Detail, Workpiece, Disk, MaсhineLimits
+import logging
+
+# Создание объекта логгера
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+from detail import Exercise, Parameters, Detail, Workpiece, Disk, MachineLimits
 
 class Worker:
     """Класс Worker для рассчета координат точек распиловки и движения станка."""
 
     def __init__(self, exercise: Exercise, parameters: Parameters,
-                 detail: Detail, workpiece: Workpiece, disk: Disk, machine_limits: MaсhineLimits,
-                 result=None):
+                 detail: Detail, workpiece: Workpiece, disk: Disk, machine_limits: MachineLimits,
+                 result=None) -> None:
         """
         Инициализирует объект Worker.
 
@@ -18,7 +22,20 @@ class Worker:
         - machine_limits (MachineLimits): объект ограничений станка
         - result (optional): результат работы станка (по умолчанию None)
         """
-        self.exercise = exercise
+        if not isinstance(exercise, Exercise):
+            raise ValueError("exercise должен быть типа Exercise")
+        if not isinstance(parameters, Parameters):
+            raise ValueError("parameters должен быть типа Parameters")
+        if not isinstance(detail, Detail):
+            raise ValueError("detail должен быть типа Detail")
+        if not isinstance(workpiece, Workpiece):
+            raise ValueError("workpiece должен быть типа Workpiece")
+        if not isinstance(disk, Disk):
+            raise ValueError("disk должен быть типа Disk")
+        if not isinstance(machine_limits, MachineLimits):
+            raise ValueError("machine_limits должен быть типа MachineLimits")
+
+        self.exercise = exercise    
         self.parameters = parameters
         self.detail = detail
         self.workpiece = workpiece
@@ -26,7 +43,7 @@ class Worker:
         self.result = result
         self.machine_limits = machine_limits
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Возвращает строковое представление объекта Worker.
 
@@ -38,7 +55,7 @@ class Worker:
                 f"Результат: {self.result}")
 
     @staticmethod
-    def round_coordinates(value):
+    def round_coordinates(value:float) -> float:
         """
         Округляет координаты до трех знаков после запятой.
 
@@ -50,7 +67,7 @@ class Worker:
         """
         return round(value, 3)
 
-    def calculate_total_number_of_details(self):
+    def calculate_total_number_of_details(self) -> int:
         """
         Рассчитывает общее количество деталей, которые можно изготовить из заготовки.
 
@@ -64,7 +81,7 @@ class Worker:
             total_number_details = X_count * Y_count
         return total_number_details
 
-    def check_total_number_of_details(self):
+    def check_total_number_of_details(self)-> None:
         """
         Проверяет общее количество деталей, которые можно изготовить из заготовки.
 
@@ -76,22 +93,24 @@ class Worker:
         if total_number_details == 0:
             print("\033[1;31;43mИз заготовки нельзя напилить детали по заданию!\033[0m")
         elif total_number_details < self.exercise.count:
-            print(f"Количество деталей, которые можно изготовить из данной заготовки: "
-                  f"{total_number_details}\n"
-                  f"Количество деталей, которые нужны по заданию: "
-                  f"{self.exercise.count}\n"
-                  f"Нужно напилить еще: {self.exercise.count - total_number_details}")
+            logging.info(
+                f"Количество деталей, которые можно изготовить из данной заготовки: "
+                f"{total_number_details}"
+            )
+            logging.info(f"Количество деталей, которые нужны по заданию: {self.exercise.count}")
+            logging.info(f"Нужно напилить еще: {self.exercise.count - total_number_details}")
         elif total_number_details > self.exercise.count:
-            print(f"Количество деталей, которые можно изготовить из данной заготовки: "
-                  f"{total_number_details}\n"
-                  f"Количество деталей, которые нужны по заданию: "
-                  f"{self.exercise.count}\n"
-                  f"Перееизбыток деталей: {total_number_details - self.exercise.count}\n"
-                  "Пожалуйста, скорректируйте размер заготовки")
+            logging.info(
+                f"Количество деталей, которые можно изготовить из данной заготовки: "
+                f"{total_number_details}"
+                         )
+            logging.info(f"Количество деталей, которые нужны по заданию: {self.exercise.count}")
+            logging.info(f"Перееизбыток деталей: {total_number_details - self.exercise.count}")
+            logging.info("Пожалуйста, скорректируйте размер заготовки")
         else:
-            print('Задание можно выполнить из заготовки')
+            logging.info('Задание можно выполнить из заготовки')
 
-    def calculate_coordinates_x_y_cuts(self):
+    def calculate_coordinates_x_y_cuts(self) -> dict:
         """
         Рассчитывает координаты точек распиловки по осям X и Y.
 
@@ -137,7 +156,7 @@ class Worker:
 
         return intermediate_result_xy
 
-    def calculate_coordinates_z_cuts(self):
+    def calculate_coordinates_z_cuts(self)-> list:
         """
         Рассчитывает координаты точек распиловки по оси Z.
 
@@ -161,7 +180,7 @@ class Worker:
         intermediate_result_z.sort(reverse=True)
         return intermediate_result_z
 
-    def calculate_coordinates(self):
+    def calculate_coordinates(self)-> dict:
         """
         Рассчитывает координаты точек распиловки по осям X, Y и Z.
 
@@ -170,9 +189,16 @@ class Worker:
         """
         intermediate_result_xy = self.calculate_coordinates_x_y_cuts()
         intermediate_result_z = self.calculate_coordinates_z_cuts()
-        return intermediate_result_xy, intermediate_result_z
+        moving_points = self.calculate_coordinates_of_movement()
+        result = {
+            'work_cuts': intermediate_result_xy, 
+            'Z_step': intermediate_result_z,
+            'moving_points': moving_points
+            }
+        self.result = result
+        return result
 
-    def calculate_coordinates_of_movement(self):
+    def calculate_coordinates_of_movement(self)-> dict:
         """
         Рассчитывает координаты точек движения станка.
 
