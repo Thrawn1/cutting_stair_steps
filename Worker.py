@@ -1,10 +1,10 @@
-from detail import Exercise, Parameters, Detail, Workpiece, Disk, MachineLimits
+from detail import Exercise, Parameters, Detail, Workpiece, Disk, MaсhineLimits
 
 class Worker:
     """Класс Worker для рассчета координат точек распиловки и движения станка."""
 
     def __init__(self, exercise: Exercise, parameters: Parameters,
-                 detail: Detail, workpiece: Workpiece, disk: Disk, machine_limits: MachineLimits,
+                 detail: Detail, workpiece: Workpiece, disk: Disk, machine_limits: MaсhineLimits,
                  result=None):
         """
         Инициализирует объект Worker.
@@ -77,12 +77,16 @@ class Worker:
             print("\033[1;31;43mИз заготовки нельзя напилить детали по заданию!\033[0m")
         elif total_number_details < self.exercise.count:
             print(f"Количество деталей, которые можно изготовить из данной заготовки: "
-                  f"{total_number_details}\nКоличество деталей, которые нужны по заданию: "
-                  f"{self.exercise.count}\nНужно напилить еще: {self.exercise.count - total_number_details}")
+                  f"{total_number_details}\n"
+                  f"Количество деталей, которые нужны по заданию: "
+                  f"{self.exercise.count}\n"
+                  f"Нужно напилить еще: {self.exercise.count - total_number_details}")
         elif total_number_details > self.exercise.count:
             print(f"Количество деталей, которые можно изготовить из данной заготовки: "
-                  f"{total_number_details}\nКоличество деталей, которые нужны по заданию: "
-                  f"{self.exercise.count}\nПерееизбыток деталей: {total_number_details - self.exercise.count}\n"
+                  f"{total_number_details}\n"
+                  f"Количество деталей, которые нужны по заданию: "
+                  f"{self.exercise.count}\n"
+                  f"Перееизбыток деталей: {total_number_details - self.exercise.count}\n"
                   "Пожалуйста, скорректируйте размер заготовки")
         else:
             print('Задание можно выполнить из заготовки')
@@ -106,7 +110,8 @@ class Worker:
                 Y_now -= self.disk.tickness_correction(self.detail.width)
 
             X1 = self.machine_limits.chek_coordinate('X', (X_now - self.disk.cutter_extension()))
-            X2 = self.machine_limits.chek_coordinate('X', (X_now + self.workpiece.length + self.disk.cutter_extension()))
+            X2 = self.machine_limits.chek_coordinate('X',
+                 X_now + self.workpiece.length + self.disk.cutter_extension())
             Y = self.machine_limits.chek_coordinate('Y', Y_now)
 
             line = {'X1': self.round_coordinates(X1),
@@ -121,7 +126,8 @@ class Worker:
                 X_now += self.disk.tickness_correction(self.detail.length)
 
             Y1 = self.machine_limits.chek_coordinate('Y', Y_now - self.disk.cutter_extension())
-            Y2 = self.machine_limits.chek_coordinate('Y', Y_now + self.workpiece.width + self.disk.cutter_extension())
+            Y2 = self.machine_limits.chek_coordinate('Y',
+                 Y_now + self.workpiece.width + self.disk.cutter_extension())
             X = self.machine_limits.chek_coordinate('X', X_now)
 
             line = {'Y1': self.round_coordinates(Y1),
@@ -142,7 +148,9 @@ class Worker:
         Z_end = -self.detail.thickness
         Z_count = self.parameters.calculate_number_of_steps_to_cut(self.detail)
 
-        intermediate_result_z = [Z_start - i * self.parameters.depth_step_forward for i in range(Z_count)]
+        intermediate_result_z = [
+            Z_start - i * self.parameters.depth_step_forward for i in range(Z_count)
+        ]
 
         last_step = Z_end - intermediate_result_z[-1]
         if 0 < last_step < self.parameters.depth_step_forward:
