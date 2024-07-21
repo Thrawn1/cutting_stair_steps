@@ -1,26 +1,30 @@
 class MachineLimits():
-    """Класс описывающий ограничения станка"""
-    def __init__(self,x_min,x_max,y_min,y_max,type_mashine):
+    """Класс описывающий ограничения станка
+    Параметры:
+    - x_min (float): минимальное значение координаты X
+    - x_max (float): максимальное значение координаты X
+    - y_min (float): минимальное значение координаты Y
+    - y_max (float): максимальное значение координаты Y
+    - type_mashine (float): модель станка
+    """
+    def __init__(self,x_min:float,x_max:float,y_min:float,y_max:float,model_machine:str) -> None:
         self.x_min = x_min
         self.x_max = x_max
         self.y_min = y_min
         self.y_max = y_max
-        self.type_mashine = type_mashine
+        self.type_machine = model_machine
 
-    def chek_coordinate(self,axis,value):
+    def check_coordinate(self, axis: str, value: float) -> float:
+        """
+        Проверяет и корректирует координаты в зависимости от ограничений.
+
+        :param axis: Ось ('X' или 'Y').
+        :param value: Значение координаты.
+        :return: Скорректированное значение координаты.
+        """
         if axis == 'X':
-            if self.x_min<value<self.x_max:
-                return value
-            else:
-                if value < self.x_min:
-                    return self.x_min
-                else:
-                    return self.x_max
+            return max(self.x_min, min(value, self.x_max))
         elif axis == 'Y':
-            if self.y_min<value<self.y_max:
-                return value
-            else:
-                if value<self.y_min:
-                    return self.y_min
-                else:
-                    return self.y_max
+            return max(self.y_min, min(value, self.y_max))
+        else:
+            raise ValueError("Axis must be 'X' or 'Y'")
