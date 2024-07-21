@@ -1,4 +1,4 @@
-from detail import Mashine_limits
+from tmp_classes import Mashine_limits
 def test_mashine_limits():
     ml = Mashine_limits(x_max=3500, x_min=0, y_max=0, y_min=-1898, type_mashine='Denver 4axis')
     
