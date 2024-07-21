@@ -5,14 +5,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 from detail import Exercise, Parameters, Detail, Workpiece, Disk, MachineLimits
 
 class Worker:
-    """Класс Worker для рассчета координат точек распиловки и движения станка."""
-
-    def __init__(self, exercise: Exercise, parameters: Parameters,
-                 detail: Detail, workpiece: Workpiece, disk: Disk, machine_limits: MachineLimits,
-                 result=None) -> None:
-        """
-        Инициализирует объект Worker.
-
+    """Класс Worker для рассчета координат точек распиловки и движения станка.
         Параметры:
         - exercise (Exercise): объект задания
         - parameters (Parameters): объект параметров резки
@@ -21,7 +14,12 @@ class Worker:
         - disk (Disk): объект диска
         - machine_limits (MachineLimits): объект ограничений станка
         - result (optional): результат работы станка (по умолчанию None)
-        """
+    """
+
+    def __init__(self, exercise: Exercise, parameters: Parameters,
+                 detail: Detail, workpiece: Workpiece, disk: Disk, machine_limits: MachineLimits,
+                 result=None) -> None:
+        # Проверка типов входных данных
         if not isinstance(exercise, Exercise):
             raise ValueError("exercise должен быть типа Exercise")
         if not isinstance(parameters, Parameters):
