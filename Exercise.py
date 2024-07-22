@@ -23,9 +23,10 @@ class Exercise():
         self.count = count
         self.offset = offset
         self.total_number_details = self.calculate_total_number_of_details()
+        self.check_total_number_of_details()
 
     #Метод, рассчитывающий количество пилов по осям X и Y 
-    def count_cutter(self):
+    def count_cutter(self) -> tuple:
         X_count = (self.workpiece.length-self.offset) // self.detail.length
         Y_count = (self.workpiece.width-self.offset) // self.detail.width
         if self.offset > 0:
@@ -48,13 +49,13 @@ class Exercise():
             total_number_details = X_count * Y_count
         return total_number_details
     
-    def calculation_efficiency(self):
+    def calculation_efficiency(self) -> float:
         """
         Рассчитывает эффективность раскроя.
         """
-
+    
         return (self.calculate_total_number_of_details() * 
-                self.detail.get_area()*100 / self.workpiece.get_area())
+                self.detail.calculate_area()*100 / self.workpiece.calculate_area())
 
     def check_total_number_of_details(self)-> None:
         """
