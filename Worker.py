@@ -1,7 +1,3 @@
-import logging
-
-# Создание объекта логгера
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 from Exercise import Exercise
 from BaseShape import Detail, Workpiece
 from Disk import Disk
@@ -70,48 +66,7 @@ class Worker:
         """
         return round(value, 3)
 
-    def calculate_total_number_of_details(self) -> int:
-        """
-        Рассчитывает общее количество деталей, которые можно изготовить из заготовки.
 
-        Возвращает:
-        - int: общее количество деталей
-        """
-        X_count, Y_count = self.exercise.count_cutter()
-        if self.exercise.offset > 0:
-            total_number_details = (X_count - 1) * (Y_count - 1)
-        else:
-            total_number_details = X_count * Y_count
-        return total_number_details
-
-    def check_total_number_of_details(self)-> None:
-        """
-        Проверяет общее количество деталей, которые можно изготовить из заготовки.
-
-        Выводит сообщение о результате проверки.
-        """
-        total_number_details = self.calculate_total_number_of_details()
-        self.total_number_details = total_number_details
-
-        if total_number_details == 0:
-            print("\033[1;31;43mИз заготовки нельзя напилить детали по заданию!\033[0m")
-        elif total_number_details < self.exercise.count:
-            logging.info(
-                f"Количество деталей, которые можно изготовить из данной заготовки: "
-                f"{total_number_details}"
-            )
-            logging.info(f"Количество деталей, которые нужны по заданию: {self.exercise.count}")
-            logging.info(f"Нужно напилить еще: {self.exercise.count - total_number_details}")
-        elif total_number_details > self.exercise.count:
-            logging.info(
-                f"Количество деталей, которые можно изготовить из данной заготовки: "
-                f"{total_number_details}"
-                         )
-            logging.info(f"Количество деталей, которые нужны по заданию: {self.exercise.count}")
-            logging.info(f"Перееизбыток деталей: {total_number_details - self.exercise.count}")
-            logging.info("Пожалуйста, скорректируйте размер заготовки")
-        else:
-            logging.info('Задание можно выполнить из заготовки')
 
     def calculate_coordinates_x_y_cuts(self) -> dict:
         """
