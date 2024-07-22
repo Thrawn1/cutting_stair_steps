@@ -187,3 +187,21 @@ class Worker:
                 print("\033[1;31;43mОшибка. Длина реза равна нулю\033[0m")
 
         return moving_points
+
+    def calculate_number_of_steps_to_cut(self, detail):
+        if self.zigzag:
+            count = 1
+            tickness = detail.thickness
+            depth_forward = self.depth_step_forward
+            depth_backward = self.depth_step_backward
+            while tickness > 0:
+                if count % 2 == 0:
+                    tickness -= depth_backward
+                else:
+                    tickness -= depth_forward
+                count += 1
+            return count
+            
+        else:
+            #Переписать. Нужно учитывать остаток и рассчитывать последний пил отдельно
+            return detail.thickness // self.depth_step_forward
