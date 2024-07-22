@@ -2,7 +2,12 @@ import logging
 
 # Создание объекта логгера
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-from tmp_classes import Exercise, Parameters, Detail, Workpiece, Disk, MachineLimits
+from Exercise import Exercise
+from BaseShape import Detail, Workpiece
+from Disk import Disk
+from Parameters import Parameters
+from MachineLimits import MachineLimits
+
 
 class Worker:
     """Класс Worker для рассчета координат точек распиловки и движения станка.
