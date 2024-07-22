@@ -1,7 +1,8 @@
 class Disk():
     """Класс для хранения информации о диске - его номере, диаметре, толщине суппорта,
     толщине резца и указание какой материал он режет"""
-    def __init__(self, number:int, diameter:float, support_thickness:float, cutter_thickness:float, material:str,name:str,Z_sec=50,Z_approach=5):
+    def __init__(self, number:int, diameter:float, support_thickness:float, cutter_thickness:float,
+                  material:str,name_disk:str,Z_sec=50,Z_approach=5) -> None:
         """
         Параметры:
         - number (int): номер диска
@@ -26,7 +27,7 @@ class Disk():
         self.support_thickness = support_thickness
         self.cutter_thickness = cutter_thickness
         self.material = material
-        self.name = name
+        self.name_disk = name_disk
         self.Z_sec = Z_sec
         self.Z_approach = Z_approach
 
