@@ -2,6 +2,7 @@ class Exercise():
     """Класс описывающий задание - объект деталь, объект заготовка, объект диск, количество 
     деталей и отсуп от края заготовки"""
     def __init__(self, detail, workpiece, disk, count,offset=0):
+        
         self.detail = detail
         self.workpiece = workpiece
         self.disk = disk
