@@ -1,7 +1,7 @@
 class Detail():
-    """Класс для хранения информации о детали - ее ширине, длине, толщине, углах между сторонами и
-     материале"""
-    def __init__(self, width, length, thickness, material, rectangle=True):
+    """Класс Detail для хранения информации о детали."""
+    def __init__(self, width:float, length:float, thickness:float, 
+                 material='Granite', rectangle=True):
         """
         Инициализация объекта Detail.
         Параметры:
