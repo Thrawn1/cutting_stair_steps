@@ -17,6 +17,13 @@ class Exercise():
         - count (int): количество деталей
         - offset (float): отсуп от края заготовки
     """
+        self.validate_type(detail, 'detail', Detail)
+        self.validate_type(workpiece, 'workpiece', Workpiece)
+        self.validate_type(disk, 'disk', Disk)
+        self.validate_type(count, 'count', int)
+        self.validate_type(offset, 'offset', (int, float))
+
+
         self.detail = detail
         self.workpiece = workpiece
         self.disk = disk
@@ -25,11 +32,31 @@ class Exercise():
         self.total_number_details = self.calculate_total_number_of_details()
         self.check_total_number_of_details()
 
+    @staticmethod
+    def validate_type(value, name, type_):
+        """
+        Проверяет тип значения.
+
+        Параметры:
+        - value: значение
+        - name (str): имя значения
+        - type_: тип значения
+        """
+        if not isinstance(value, type_):
+            raise ValueError(f"{name} должен быть типа {type_}")
+
     #Метод, рассчитывающий количество пилов по осям X и Y 
     def count_cutter(self) -> tuple:
+        """
+        Рассчитывает количество пилов по осям X и Y.
+
+        Возвращает:
+        - tuple: количество пилов по осям X и Y
+        """
         X_count = (self.workpiece.length-self.offset) // self.detail.length
         Y_count = (self.workpiece.width-self.offset) // self.detail.width
         if self.offset > 0:
+            #Если отступ от края заготовки больше 0,то нужно учесть торцовочные резы
             X_count +=1
             Y_count +=1
         return X_count, Y_count
@@ -44,6 +71,9 @@ class Exercise():
         """
         X_count, Y_count = self.count_cutter()
         if self.offset > 0:
+            #Если отступ от края заготовки больше 0, 
+            # то общее количество деталей равно произведению количества пилов по осям X и Y минус 1, 
+            # так как в случае отступа есть торцовочные резы
             total_number_details = (X_count - 1) * (Y_count - 1)
         else:
             total_number_details = X_count * Y_count
@@ -65,7 +95,7 @@ class Exercise():
         """
 
         if self.total_number_details == 0:
-            print("\033[1;31;43mИз заготовки нельзя напилить детали по заданию!\033[0m")
+            logging.error("Из заготовки нельзя напилить детали по заданию!")
         elif self.total_number_details < self.count:
             logging.info(
                 f"Количество деталей, которые можно изготовить из данной заготовки: "
