@@ -1,35 +1,31 @@
 class Detail():
     """Класс для хранения информации о детали - ее ширине, длине, толщине, углах между сторонами и
      материале"""
-    def __init__(self, width, length, thickness, angle1, angle2, material):
+    def __init__(self, width, length, thickness, material, rectangle=True):
+        """
+        Инициализация объекта Detail.
+        Параметры:
+        - width (float): ширина детали
+        - length (float): длина детали
+        - thickness (float): толщина детали
+        - material (str): материал детали
+        - rectangle (bool): является ли деталь прямоугольной (по умолчанию True)
+        """
         self.width = width
         self.length = length
         self.thickness = thickness
-        self.angle1 = angle1
-        self.angle2 = angle2
         self.material = material
+        self.rectangle = rectangle
         self.area = width * length
-    def __repr__(self) -> str:
+    
+    def __str__(self):
         """
         Возвращает строковое представление объекта Detail.
-
         Возвращает:
         - str: строковое представление объекта Detail
         """
-        return (f"Detail(width={self.width}, length={self.length}, thickness={self.thickness}, "
-                f"angle1={self.angle1}, angle2={self.angle2}, material={self.material})")
-    def __str__(self) -> str:
-        """
-        Возвращает строковое представление объекта Detail.
-
-        Возвращает:
-        - str: строковое представление объекта Detail
-        """
-        return (f"Ширина: {self.width}\n"
-                f"Длина: {self.length}\n"
-                f"Толщина: {self.thickness}\n"
-                f"Угол1: {self.angle1}\n"
-                f"Угол2: {self.angle2}\n"
-                f"Материал: {self.material}\n"
-                f"Площадь: {self.area}")
+        return (f"Деталь: {self.width}x{self.length}x{self.thickness} "
+                f"из материала {self.material}")
+    def __repr__(self):
+        return self.__str__()
     
