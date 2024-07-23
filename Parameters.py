@@ -5,15 +5,15 @@ class SpeedParameters:
     - speed_backward (int): скорость обратного хода резки (по умолчанию 0.7 от скорости прямого хода)
     - speed_depth (int): скорость заглубления инструмента
     """
-    def __init__(self,speed_forward:int,speed_depth:int,speed_bakword=None) -> None:
+    def __init__(self,speed_forward:int,speed_depth:int,speed_backward=None) -> None:
         
         self.validate_type(speed_forward, "speed_forward", int)
         self.validate_type(speed_depth, "speed_depth", int)
-        if speed_bakword is not None:
-            self.validate_type(speed_bakword, "speed_backward", int)
+        if speed_backward is not None:
+            self.validate_type(speed_backward, "speed_backward", int)
         
         self.speed_forward = speed_forward
-        self.speed_backward = speed_bakword if speed_bakword is not None else 0.7 * speed_forward
+        self.speed_backward = speed_backward if speed_backward is not None else 0.7 * speed_forward
         self.speed_depth = speed_depth
 
     @staticmethod
@@ -36,7 +36,7 @@ class DepthParameters:
     - depth_step_backward (float): шаг глубины работы инструмента по обратному ходу (по умолчанию равен шагу глубины работы инструмента по прямому ходу)
     - extra_depth (int): дополнительная глубина реза (по умолчанию 0)
     """
-    def __init__(self,depth_step_forward:float,depth_step_backward:float,extra_depth=0.0) -> None:
+    def __init__(self,depth_step_forward:float,depth_step_backward = None,extra_depth=0.0) -> None:
         """
         Параметры:
         - depth_step_forward (float): шаг глубины работы инструмента по прямому ходу
