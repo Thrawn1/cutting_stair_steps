@@ -67,7 +67,6 @@ class Worker:
         return round(value, 3)
 
 
-
     def calculate_coordinates_x_y_cuts(self) -> dict:
         """
         Рассчитывает координаты точек распиловки по осям X и Y.
@@ -187,4 +186,3 @@ class Worker:
                 print("\033[1;31;43mОшибка. Длина реза равна нулю\033[0m")
 
         return moving_points
-
