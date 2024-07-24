@@ -11,6 +11,13 @@ class BaseCut:
         self.worker = worker
         self.detail = detail
 
+    def calculate_number_of_steps_to_cut(self) -> int:
+        """
+        Абстрактный метод для расчета количества шагов для распила детали. 
+        Должен быть переопределен в дочерних классах.
+        """
+        raise NotImplementedError("Метод calculate_number_of_steps_to_cut\
+                                  должен быть переопределен в дочерних классах")
 
     def calculate_coordinates_z_cuts(self,Z_count:int)-> list:
         """
@@ -37,7 +44,8 @@ class BaseCut:
     
     
     def __str__(self):
-        return self.name
+        """Возвращает строковое представление режима резки"""
+        return self.name, self.parameters, self.worker, self.disk, self.detail
 
     def __repr__(self):
         return self.name
