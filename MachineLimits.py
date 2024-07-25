@@ -25,6 +25,7 @@ class MachineLimits:
                 self.y_min = y_min
                 self.y_max = y_max
                 self.model_machine = model_machine
+                self.validator = validator
 
     def check_coordinate_axis_x_y(self, axis: str, value: float) -> float:
         """
@@ -34,8 +35,8 @@ class MachineLimits:
         :param value: Значение координаты.
         :return: Скорректированное значение координаты.
         """
-        if Validator().validate_type(axis, str, 'axis') and \
-            Validator().validate_type(value, float, 'value'):
+        if self.validator.validate_type(axis, str, 'axis') and \
+            self.validator.validate_type(value, float, 'value'):
             if axis == 'X':
                 return max(self.x_min, min(value, self.x_max))
             elif axis == 'Y':
@@ -51,8 +52,8 @@ class MachineLimits:
         Возвращает:
         - bool: True, если значение соответствует ограничениям, иначе False
         """
-        if Validator().validate_type(value, float, 'value') and \
-            Validator().validate_type(type_mashine, str, 'type_mashine'):
+        if self.validator.validate_type(value, float, 'value') and \
+            self.validator.validate_type(type_mashine, str, 'type_mashine'):
             if type_mashine == '4Axis' and value >= 0.0 and value <= 180.0:
                 return True
             elif type_mashine == '5Axis' and value >= -4.9 and value <= 360.0:
