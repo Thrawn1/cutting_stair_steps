@@ -1,5 +1,5 @@
-from Validator import Validator
-from MachineLimits import MachineLimits
+from old_code.v2.Validator import Validator
+from old_code.v2.MachineLimits import MachineLimits
 
 
 class Main:

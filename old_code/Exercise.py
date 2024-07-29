@@ -3,7 +3,7 @@ import logging
 # Создание объекта логгера
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 from BaseShape import Detail, Workpiece
-from Disk import Disk
+from old_code.v2.Disk import Disk
 
 class Exercise():
     """Класс описывающий задание - объект деталь, объект заготовка, объект диск, количество 

@@ -1,8 +1,8 @@
 from Exercise import Exercise
 from BaseShape import Detail, Workpiece
-from Disk import Disk
+from old_code.v2.Disk import Disk
 from Parameters import Parameters
-from MachineLimits import MachineLimits
+from old_code.v2.MachineLimits import MachineLimits
 
 
 class Worker:

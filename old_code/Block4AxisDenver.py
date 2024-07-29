@@ -1,4 +1,4 @@
-from Disk import Disk
+from old_code.v2.Disk import Disk
 from Worker import Worker
 from Parameters import Parameters
 

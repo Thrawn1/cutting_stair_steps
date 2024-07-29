@@ -1,6 +1,6 @@
 from Parameters import Parameters
 from Worker import Worker
-from Disk import Disk
+from old_code.v2.Disk import Disk
 from BaseShape import Detail
 
 class BaseCut:

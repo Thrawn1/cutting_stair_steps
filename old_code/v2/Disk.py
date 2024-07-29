@@ -1,4 +1,4 @@
-from Validator import Validator
+from old_code.v2.Validator import Validator
 
 class Disk():
     """Класс для хранения информации о диске - его номере, диаметре, толщине суппорта,
