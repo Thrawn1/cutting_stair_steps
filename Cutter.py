@@ -17,6 +17,6 @@ class Cutter():
         pass
     def get_coordinate_axis_a(self)->float:
         pass
-    def coordinates_of_movement(self)->dict:
+    def calculate_coordinates_of_movement(self)->dict:
         pass
 
