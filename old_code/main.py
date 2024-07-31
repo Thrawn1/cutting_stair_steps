@@ -1,15 +1,22 @@
-detali = Detail(length=420, width=1190, thickness=120, angle1=90, angle2=90, material="granite")
-zagotovka = Workpiece(length=1540, width=1225, thickness=120, angle1=90, angle2=90, material="granite", x=1022.775, y=-631.581)
-disk = Disk(number=20, diameter=509, support_thickness=3, cutter_thickness=4, material="granite",name="Granit Marimal D510")
-zadanie = Exercise(detali, zagotovka, disk, 4, offset=10)
-parametry = Parameters(speed_forward=2200, speed_depth=110, depth_step_forward=5, zigzag=True) 
-worker = Worker(zadanie, parametry, detali, zagotovka, disk)
-print(worker.calculate_coordinates())
- 
-ml = MachineLimits(x_max=3500,x_min=0,y_max=0,y_min=-1898,type_mashine='Denver 4axis')
-print(ml.chek_coordinate('X',3600))
-print(ml.chek_coordinate('X',3220))
-print(ml.chek_coordinate('X',-344))
-print(ml.chek_coordinate('Y',100))
-print(ml.chek_coordinate('Y',-2000))
-print(ml.chek_coordinate('Y',-1200))
+from old_code.v2.Validator import Validator
+from old_code.v2.MachineLimits import MachineLimits
+
+
+class Main:
+    def __init__(self):
+        self.validator = Validator()
+        self.recive_data_machine_limits()
+
+    def recive_data_machine_limits(self):
+        x_min = float(input('Введите x_min: '))
+        x_max = float(input('Введите x_max: '))
+        y_min = float(input('Введите y_min: '))
+        y_max = float(input('Введите y_max: '))
+        model_machine = input('Введите модель станка: ')
+        if self.validator.validate_input(x_min, float, 'x_min') and \
+            self.validator.validate_input(x_max, float, 'x_max') and \
+            self.validator.validate_input(y_min, float, 'y_min') and \
+            self.validator.validate_input(y_max, float, 'y_max') and \
+            self.validator.validate_input(model_machine, str, 'model_machine'):
+                if self.validator.validate_min_max(x_min, x_max):
+                    self.MaсhineLimits = MachineLimits(x_min, x_max, y_min, y_max, model_machine)

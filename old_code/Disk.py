@@ -1,8 +1,10 @@
+from old_code.v2.Validator import Validator
+
 class Disk():
     """Класс для хранения информации о диске - его номере, диаметре, толщине суппорта,
     толщине резца и указание какой материал он режет"""
     def __init__(self, number:int, diameter:float, support_thickness:float, cutter_thickness:float,
-                  material:str,name_disk:str,Z_sec=50,Z_approach=5) -> None:
+                  material:str,name_disk:str,validator:Validator,Z_sec=50,Z_approach=5) -> None:
         """
         Параметры:
         - number (int): номер диска
